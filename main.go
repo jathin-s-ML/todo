@@ -4,14 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
-	"github.com/jathin-s-ML/todo/internal" // Updated import path
+
+	"github.com/jathin-s-ML/todo/internal/manager"
 )
 
 func main() {
 	fmt.Println("TODO Application")
 	reader := bufio.NewReader(os.Stdin)
-	todoManager := internal.NewTodoList()
+	todoManager := manager.NewTodoList()
 
 	for {
 		fmt.Println("\nChoose an option:")
@@ -19,21 +19,17 @@ func main() {
 		fmt.Println("2. List All Tasks")
 		fmt.Println("3. Mark a Task as Completed")
 		fmt.Println("4. Delete a Task")
-		fmt.Println("5. Exit")
+		fmt.Println("5. Fetch Tasks Concurrently")
+		fmt.Println("6. Exit")
 
-		fmt.Print("Enter your choice: ")
 		var choice int
-		_, err := fmt.Scan(&choice)
-		if err != nil {
-			fmt.Println("Invalid input. Please enter a number.")
-			continue
-		}
+		fmt.Print("Enter your choice: ")
+		fmt.Scan(&choice)
 
 		switch choice {
 		case 1:
 			fmt.Print("Enter the task you want to add: ")
 			title, _ := reader.ReadString('\n')
-			title = strings.TrimSpace(title)
 			todoManager.Add(title)
 
 		case 2:
@@ -42,11 +38,7 @@ func main() {
 		case 3:
 			fmt.Print("Enter the Task ID to mark as complete: ")
 			var id int
-			_, err := fmt.Scan(&id)
-			if err != nil {
-				fmt.Println("Invalid input. Please enter a valid task ID.")
-				continue
-			}
+			fmt.Scan(&id)
 			if err := todoManager.MarkAsCompleted(id); err != nil {
 				fmt.Println(err)
 			}
@@ -54,11 +46,7 @@ func main() {
 		case 4:
 			fmt.Print("Enter the Task ID to delete: ")
 			var id int
-			_, err := fmt.Scan(&id)
-			if err != nil {
-				fmt.Println("Invalid input. Please enter a valid task ID.")
-				continue
-			}
+			fmt.Scan(&id)
 			if err := todoManager.DeleteTask(id); err != nil {
 				fmt.Println(err)
 			} else {
@@ -66,6 +54,9 @@ func main() {
 			}
 
 		case 5:
+			todoManager.FetchTasksConcurrently()
+
+		case 6:
 			fmt.Println("Exiting TODO application")
 			return
 

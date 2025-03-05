@@ -1,6 +1,5 @@
-package internal
+package models
 
-// Todo represents a single task
 type Todo struct {
 	ID        int
 	TaskTitle string
