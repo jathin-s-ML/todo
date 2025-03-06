@@ -3,72 +3,72 @@ package storage
 import (
 	"errors"
 	"sync"
-
-	"github.com/jathin-s-ML/todo/internal/models"
 )
 
-// TodoStorage manages all todo operations
+// Todo represents a task
+type Todo struct {
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed"`
+}
+
+// TodoStorage manages todos in memory
 type TodoStorage struct {
-	mu     sync.Mutex
-	todos  map[int]*models.Todo
+	mu    sync.Mutex
+	todos []Todo
 	nextID int
 }
 
-// NewTodoStorage initializes an empty todo storage
+// NewTodoStorage initializes the storage
 func NewTodoStorage() *TodoStorage {
 	return &TodoStorage{
-		todos:  make(map[int]*models.Todo),
+		todos:  []Todo{},
 		nextID: 1,
 	}
 }
 
-// AddTodo adds a new task to the list
-func (s *TodoStorage) AddTodo(title string) *models.Todo {
+// AddTodo adds a new todo
+func (s *TodoStorage) AddTodo(title string) Todo {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	todo := &models.Todo{
-		ID:        s.nextID,
-		Title:     title,
-		Completed: false,
-	}
-	s.todos[s.nextID] = todo
+	todo := Todo{ID: s.nextID, Title: title, Completed: false}
+	s.todos = append(s.todos, todo)
 	s.nextID++
 	return todo
 }
 
-// GetTodos retrieves all tasks
-func (s *TodoStorage) GetTodos() []*models.Todo {
+// GetTodos retrieves all todos
+func (s *TodoStorage) GetTodos() []Todo {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-
-	var todos []*models.Todo
-	for _, todo := range s.todos {
-		todos = append(todos, todo)
-	}
-	return todos
+	return s.todos
 }
 
-// MarkAsCompleted marks a task as completed
+// MarkAsCompleted marks a todo as completed
 func (s *TodoStorage) MarkAsCompleted(id int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if todo, exists := s.todos[id]; exists {
-		todo.Completed = true
-		return nil
+	for i, todo := range s.todos {
+		if todo.ID == id {
+			s.todos[i].Completed = true
+			return nil
+		}
 	}
-	return errors.New("task not found")
+	return errors.New("todo not found")
 }
 
-// DeleteTodo removes a task from the list
+// DeleteTodo removes a todo by ID
 func (s *TodoStorage) DeleteTodo(id int) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if _, exists := s.todos[id]; exists {
-		delete(s.todos, id)
-		return nil
+	for i, todo := range s.todos {
+		if todo.ID == id {
+			s.todos = append(s.todos[:i], s.todos[i+1:]...)
+			return nil
+		}
 	}
-	return errors.New("task not found")
+	return errors.New("todo not found")
 }

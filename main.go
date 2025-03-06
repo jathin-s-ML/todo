@@ -1,27 +1,32 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/jathin-s-ML/todo/internal/handlers"
+	"github.com/jathin-s-ML/todo/internal/middleware"
 	"github.com/jathin-s-ML/todo/internal/storage"
 )
 
 func main() {
-	fmt.Println("Starting TODO Application...")
-
-	// Initialize Todo storage
 	store := storage.NewTodoStorage()
+	router := mux.NewRouter()
 
-	// Setup router
-	r := mux.NewRouter()
-	handlers.RegisterTodoRoutes(r, store)
+	// Apply Logging Middleware globally
+	router.Use(middleware.LoggingMiddleware)
 
-	// Start HTTP Server
-	port := ":8080"
-	fmt.Println("Server running on", port)
-	log.Fatal(http.ListenAndServe(port, r))
+	// Public Routes (No Auth)
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Welcome to the Todo API!"))
+	}).Methods("GET")
+
+	// Protected Routes (Require Auth)
+	protectedRoutes := router.PathPrefix("/todos").Subrouter()
+	protectedRoutes.Use(middleware.AuthMiddleware)
+	handlers.RegisterTodoRoutes(protectedRoutes, store)
+
+	log.Println("Server running on :8080")
+	http.ListenAndServe(":8080", router)
 }
