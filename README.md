@@ -11,20 +11,20 @@ A simple Todo List API built with Golang using Gorilla Mux for routing. It suppo
 
 ## 📁 Project Structure
 
-```
-.
-├── internal
-│   ├── handlers
-│   │   ├── todo.go         # Todo handlers (API endpoints)
-│   ├── middleware
-│   │   ├── auth.go         # Authentication middleware
-│   │   ├── logging.go      # Logging middleware
-│   ├── storage
-│   │   ├── todostorage.go  # In-memory storage for todos
-├── main.go                 # Entry point
-├── go.mod                  # Go module file
-├── go.sum                  # Dependencies checksum
-```
+TODO/
+│── internal/
+│   ├── handlers/
+│   │   ├── todo.go
+│   ├── middleware/
+│   │   ├── auth.go
+│   │   ├── logging.go
+│   ├── storage/
+│   │   ├── todostorage.go
+│   │   ├── todostorage_test.go
+│── go.mod
+│── go.sum
+│── main.go
+
 
 ## 🛠 Setup & Installation
 
