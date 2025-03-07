@@ -11,20 +11,21 @@ A simple Todo List API built with Golang using Gorilla Mux for routing. It suppo
 
 ## 📁 Project Structure
 
-TODO/
-│── internal/
-│   ├── handlers/
-│   │   ├── todo.go
-│   ├── middleware/
-│   │   ├── auth.go
-│   │   ├── logging.go
-│   ├── storage/
-│   │   ├── todostorage.go
-│   │   ├── todostorage_test.go
-│── go.mod
-│── go.sum
-│── main.go
-
+```
+.
+├── internal
+│   ├── handlers
+│   │   ├── todo.go         # Todo handlers (API endpoints)
+│   ├── middleware
+│   │   ├── auth.go         # Authentication middleware
+│   │   ├── logging.go      # Logging middleware
+│   ├── storage
+│   │   ├── todostorage.go  # In-memory storage for todos
+│   │   ├── todostorage_test.go  # Unit tests for storage
+├── main.go                 # Entry point
+├── go.mod                  # Go module file
+├── go.sum                  # Dependencies checksum
+```
 
 ## 🛠 Setup & Installation
 
@@ -73,7 +74,7 @@ Server will start on `http://localhost:8080`
 
 ## 🧪 Running Tests
 
-Tests are written using Go's testing package and `stretchr/testify`.
+Tests are written using Go's testing package.
 Run tests with:
 
 ```sh
